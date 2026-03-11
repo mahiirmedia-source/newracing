@@ -9,6 +9,8 @@
     </title>
     <script src="https://cdn.tailwindcss.com">
     </script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0B0A15">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;display=swap" rel="stylesheet" />
     <style>
         :root {
@@ -622,15 +624,55 @@
 
             announce: (text) => {
                 if ('speechSynthesis' in window) {
-                    // Cancel any currently playing speech to keep it snappy
-                    window.speechSynthesis.cancel();
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.rate = 1.2; // Speak slightly faster
-                    utterance.pitch = 1.1; // Slightly more energetic pitch
-                    window.speechSynthesis.speak(utterance);
+                    try {
+                        // Cancel any currently playing speech to keep it snappy
+                        window.speechSynthesis.cancel();
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.rate = 1.1; // Speak slightly faster
+                        utterance.pitch = 1.0; 
+                        
+                        // Error handling
+                        utterance.onerror = (e) => console.error("SpeechSynthesis error:", e);
+                        
+                        // Mobile requires voices to be loaded, sometimes asynchronously
+                        const voices = window.speechSynthesis.getVoices();
+                        if (voices.length > 0) {
+                            // Optionally pick a specific voice if needed
+                            // utterance.voice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+                        }
+
+                        window.speechSynthesis.speak(utterance);
+                    } catch (e) {
+                        console.error("SpeechSynthesis failed:", e);
+                    }
                 }
             }
         };
+
+        // Prime speech synthesis on user gesture (Crucial for Mobile)
+        function primeSpeech() {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance("");
+                window.speechSynthesis.speak(utterance);
+                console.log("Speech synthesis primed.");
+            }
+        }
+
+        // Handle async voice loading
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                console.log("Voices loaded:", window.speechSynthesis.getVoices().length);
+            };
+        }
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered:', reg))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
 
         // --- 2. Game Setup & Data ---
         const canvas = document.getElementById('gameCanvas');
@@ -1349,6 +1391,7 @@
         });
 
         document.getElementById('start-btn').addEventListener('click', () => {
+            primeSpeech(); // Prime speech engine on user click
             audioCtx.resume().then(() => {
                 bgMusic.play().catch(e => console.log("Audio play failed:", e));
                 document.getElementById('start-screen').style.display = 'none';

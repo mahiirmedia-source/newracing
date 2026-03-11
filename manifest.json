@@ -1,0 +1,23 @@
+{
+  "name": "Country Brawl",
+  "short_name": "CountryBrawl",
+  "description": "Watch nations battle in the absolute arena.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B0A15",
+  "theme_color": "#0B0A15",
+  "icons": [
+    {
+      "src": "https://flagcdn.com/w160/us.png",
+      "sizes": "160x160",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://flagcdn.com/w160/fr.png",
+      "sizes": "160x160",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
