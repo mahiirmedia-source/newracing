@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        BOM BIM BA9 HMH
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-color: #0B0A15;
+            /* Deep luxury navy */
+            --bg-gradient-top: #1A1333;
+            /* Rich dark violet */
+            --surface-color: rgba(255, 255, 255, 0.03);
+            /* Frosted white */
+            --border-color: rgba(255, 255, 255, 0.08);
+            /* Soft white border */
+            --accent-gold: #FFD700;
+            --accent-cyan: #00F0FF;
+            --danger-color: #FF2A54;
+            /* Pinkish vibrant red */
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(circle at top, var(--bg-gradient-top) 0%, var(--bg-color) 100%);
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            touch-action: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: calc(100vh * 9 / 16);
+            max-height: calc(100vw * 16 / 9);
+            background-color: #050510;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glass-panel {
+            background: var(--surface-color);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        .neon-text-blue {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+        }
+
+        .neon-text-red {
+            color: #ff3333;
+            text-shadow: 0 0 5px #ff3333, 0 0 10px #ff3333;
+        }
+
+        .eliminated-marquee {
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .eliminated-marquee div {
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        #start-screen {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(14, 23, 41, 0.95) 0%, rgba(3, 5, 9, 0.98) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .chat-input {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+            outline: none;
+        }
+
+        .boost-pulse {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 255, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 255, 0);
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .animate-pop {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Smooth Marquee CSS replacement */
+        .marquee-wrapper {
+            position: relative;
+            width: 100%;
+            height: 30px;
+            /* Taller to fit the content without cropping */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .marquee-content {
+            display: flex;
+            min-width: 100%;
+            /* Tweak duration for speed preference */
+            animation: marquee 60s linear infinite;
+        }
+
+        /* Pause animation on hover if desired */
+        .marquee-wrapper:hover .marquee-content {
+            animation-play-state: paused;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                /* Shifts the container fully left to loop */
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Winner card pulsing glow border */
+        @keyframes winner-glow {
+            0% {
+                box-shadow: 0 0 12px 2px rgba(250, 204, 21, 0.5), 0 0 0 2px rgba(250, 204, 21, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 28px 6px rgba(155, 89, 245, 0.7), 0 0 0 2px rgba(155, 89, 245, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 12px 2px rgba(250, 204, 21, 0.5), 0 0 0 2px rgba(250, 204, 21, 0.3);
+            }
+        }
+
+        .winner-glow-border {
+            animation: winner-glow 2s ease-in-out infinite;
+            border: 1px solid rgba(250, 204, 21, 0.4);
+        }
+
+        /* Top Winners leaderboard — stable gold glow */
+        .leaderboard-glow {
+            box-shadow: 0 0 0 1.5px rgba(250, 204, 21, 0.5), 0 0 18px 4px rgba(250, 204, 21, 0.2);
+            border: 1px solid rgba(250, 204, 21, 0.3);
+        }
+
+        /* === Confetti & Fireworks for Winner Overlay === */
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-20px) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(340px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes firework-burst {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+
+            60% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .confetti-piece {
+            position: absolute;
+            top: 0;
+            width: 8px;
+            height: 12px;
+            border-radius: 2px;
+            opacity: 0;
+            animation: confetti-fall linear forwards;
+            pointer-events: none;
+        }
+
+        .firework-particle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            opacity: 0;
+            animation: firework-burst ease-out forwards;
+            pointer-events: none;
+        }
+
+        /* Stream cam - moving color glow border via box-shadow cycling */
+        @keyframes stream-border-cycle {
+            0% {
+                box-shadow: 0 0 0 2px #00C6FF, 0 0 16px 4px rgba(0, 198, 255, 0.5);
+            }
+
+            25% {
+                box-shadow: 0 0 0 2px #9B59F5, 0 0 16px 4px rgba(155, 89, 245, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 0 2px #FF2A54, 0 0 16px 4px rgba(255, 42, 84, 0.5);
+            }
+
+            75% {
+                box-shadow: 0 0 0 2px #9B59F5, 0 0 16px 4px rgba(155, 89, 245, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 0 2px #00C6FF, 0 0 16px 4px rgba(0, 198, 255, 0.5);
+            }
+        }
+
+        .stream-cam-card {
+            animation: stream-border-cycle 3s linear infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-container">
+        <!-- Start Screen (Required for Audio Context) -->
+        <div id="start-screen">
+            <div class="mb-4 animate-pop">
+                <!-- Luxury Crown Icon -->
+                <svg class="w-16 h-16 text-yellow-400 mx-auto drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]"
+                    fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M2.5 19h19v2h-19v-2zm16.84-2H4.66L2 7l6.5 4 3.5-8 3.5 8 6.5-4-2.66 10zm-11.84-2h9l1.06-4-3.5 2.15-2.06-4.72-2.06 4.72-3.5-2.15 1.06 4z" />
+                </svg>
+            </div>
+            <h1
+                class="font-extrabold text-4xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 mb-4 text-center tracking-widest drop-shadow-md pb-2 uppercase pt-2">
+                COUNTRY BRAWL
+            </h1>
+            <p class="text-slate-300 mb-10 max-w-sm text-center text-sm md:text-base leading-relaxed font-light">
+                Watch nations battle in the absolute arena. <span class="text-yellow-400 font-bold">Type your
+                    country</span> in chat to trigger boosts.
+            </p>
+            <button id="start-btn"
+                class="btn-primary text-slate-900 bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 px-8 py-4 font-bold rounded-full text-lg tracking-wider flex items-center justify-center gap-3 w-full max-w-xs mx-auto group shadow-[0_0_20px_rgba(250,204,21,0.4)] border border-yellow-200">
+                START SIMULATION
+                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </button>
+        </div>
+        <!-- Game Over Top 5 Overlay -->
+        <div id="game-over-overlay"
+            class="absolute inset-0 pointer-events-none hidden flex-col justify-center items-center z-[60] bg-black/90 backdrop-blur-xl transition-all duration-500 px-4">
+
+            <div
+                class="glass-panel w-full max-w-lg p-8 flex flex-col items-center shadow-[0_0_50px_rgba(250,204,21,0.2)] rounded-3xl relative overflow-hidden border border-yellow-500/30">
+                <!-- Inner glow top -->
+                <div
+                    class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-12 bg-gradient-to-b from-yellow-500/20 to-transparent blur-xl">
+                </div>
+
+                <h2
+                    class="orbitron-font text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 mb-8 tracking-wider text-center drop-shadow-lg">
+                    FINAL STANDINGS
+                </h2>
+
+                <div class="w-full flex justify-center mb-6 relative">
+                    <!-- Pedestal Visual -->
+                    <div
+                        class="w-full max-w-sm absolute bottom-0 h-1/2 bg-gradient-to-t from-yellow-900/40 to-transparent rounded-t-full blur-xl -z-10">
+                    </div>
+
+                    <ul id="final-leaderboard" class="w-full space-y-3 font-medium flex flex-col items-center">
+                        <!-- Dynamically populated top 5 -->
+                    </ul>
+                </div>
+
+                <p class="text-slate-400 text-sm mt-4 font-mono">Press SPACE to start a new tournament</p>
+            </div>
+        </div>
+
+        <!-- Winner/Countdown Overlay (Matches Screenshot) -->
+        <div id="countdown-overlay"
+            class="absolute inset-0 pointer-events-none hidden flex-col justify-center items-center z-50 bg-black/80 backdrop-blur-md transition-all duration-300 px-4">
+
+            <div
+                class="glass-panel winner-glow-border w-full max-w-sm p-8 flex flex-col items-center rounded-3xl relative overflow-hidden">
+                <!-- Inner glow top -->
+                <div
+                    class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-yellow-500/20 blur-xl rounded-full pointer-events-none">
+                </div>
+
+                <h2
+                    class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 mb-6 flex items-center gap-3 tracking-widest uppercase">
+                    <span>👑</span> CHAMPION <span>👑</span>
+                </h2>
+
+                <!-- Winner Flag Circle -->
+                <div class="relative w-32 h-32 mb-6">
+                    <div
+                        class="absolute inset-0 rounded-full border-[3px] border-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)] z-10 pointer-events-none">
+                    </div>
+                    <img id="winner-flag" src="" alt="Winner Flag"
+                        class="w-full h-full object-cover rounded-full shadow-inner" />
+                </div>
+
+                <h3 id="winner-text" class="text-2xl font-bold text-white mb-3 tracking-wide text-center">
+                    <!-- Country Name -->
+                </h3>
+
+                <p
+                    class="text-yellow-400 font-bold text-lg mb-8 tracking-wide drop-shadow-[0_0_5px_rgba(250,204,21,0.5)]">
+                    Won by: Arena Luck
+                </p>
+
+                <div class="text-slate-300 font-medium text-sm">
+                    Next Match: <span id="countdown-number" class="text-cyan-400 font-bold ml-1 text-base">5s</span>
+                </div>
+            </div>
+
+        </div>
+        <!-- UI Overlay -->
+        <div id="ui-layer" class="absolute inset-0 pointer-events-none hidden flex flex-col justify-between p-4 z-20">
+            <!-- Top Section -->
+            <div class="flex justify-between items-start w-full gap-3">
+                <!-- Streamer Cam -->
+                <div
+                    class="stream-cam-card w-24 h-32 md:w-32 md:h-44 glass-panel flex flex-col items-center justify-center relative overflow-hidden group">
+                    <!-- Streamer Video -->
+                    <video src="video.mp4" autoplay loop muted playsinline oncanplay="this.playbackRate=0.6;"
+                        class="absolute inset-0 w-full h-full object-cover"></video>
+                    <!-- LIVE badge on top of video -->
+                    <div class="absolute top-2 left-2 z-10 bg-red-500/90 backdrop-blur px-2 py-0.5 rounded-full flex items-center gap-1.5 font-bold shadow-lg shadow-red-500/20"
+                        style="font-size: 0.65rem;">
+                        <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                        LIVE
+                    </div>
+                </div>
+                <!-- Leaderboard -->
+                <div class="w-40 md:w-48 glass-panel leaderboard-glow p-3 flex flex-col items-stretch">
+                    <h2
+                        class="orbitron-font text-center font-bold mb-3 tracking-widest text-[10px] md:text-xs text-slate-300 uppercase">
+                        Top Winners
+                    </h2>
+                    <ul id="leaderboard" class="space-y-2 text-xs md:text-sm font-medium">
+                        <!-- Dynamically populated by updateLeaderboardUI() -->
+                    </ul>
+                </div>
+            </div>
+            <!-- Bottom Section -->
+            <div class="w-full flex flex-col items-center gap-3">
+                <!-- Helper Text Marquee Banner -->
+                <div class="w-full max-w-sm overflow-hidden text-[10px] md:text-xs text-white bg-white/5 backdrop-blur-md rounded-full border border-white/10 relative flex items-center h-7 md:h-8"
+                    style="box-shadow: 0 0 12px rgba(120, 80, 255, 0.25);">
+
+                    <div class="marquee-wrapper h-full items-center pl-2 w-full">
+                        <div class="marquee-content whitespace-nowrap min-w-max flex gap-12 items-center"
+                            style="animation-duration: 20s;">
+                            <!-- Duplicate spans for seamless scrolling -->
+                            <span class="tracking-wide">
+                                🚀 Type your <span class="text-cyan-400 font-bold uppercase"
+                                    style="text-shadow: 0 0 6px rgba(0,198,255,0.6);">country name</span> or
+                                <span class="text-yellow-400 font-bold"
+                                    style="text-shadow: 0 0 6px rgba(250,204,21,0.5);">flag</span> in chat to increase
+                                winning chances!
+                                <span class="text-pink-400 font-bold ml-6"
+                                    style="text-shadow: 0 0 6px rgba(244,114,182,0.6);">❤️ Follow = 10 pts</span>
+                                <span class="text-blue-400 font-bold ml-3"
+                                    style="text-shadow: 0 0 6px rgba(96,165,250,0.6);">👍 Like = 5 pts</span>
+                                <span class="text-green-400 font-bold ml-3"
+                                    style="text-shadow: 0 0 6px rgba(74,222,128,0.6);">💬 Comment = 1 pt</span>
+                            </span>
+                            <span class="tracking-wide">
+                                🚀 Type your <span class="text-cyan-400 font-bold uppercase"
+                                    style="text-shadow: 0 0 6px rgba(0,198,255,0.6);">country name</span> or
+                                <span class="text-yellow-400 font-bold"
+                                    style="text-shadow: 0 0 6px rgba(250,204,21,0.5);">flag</span> in chat to increase
+                                winning chances!
+                                <span class="text-pink-400 font-bold ml-6"
+                                    style="text-shadow: 0 0 6px rgba(244,114,182,0.6);">❤️ Follow = 10 pts</span>
+                                <span class="text-blue-400 font-bold ml-3"
+                                    style="text-shadow: 0 0 6px rgba(96,165,250,0.6);">👍 Like = 5 pts</span>
+                                <span class="text-green-400 font-bold ml-3"
+                                    style="text-shadow: 0 0 6px rgba(74,222,128,0.6);">💬 Comment = 1 pt</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="w-full max-w-sm glass-panel py-2 px-1 relative overflow-hidden flex flex-col gap-1 border-t-red-500/30">
+
+                    <h2
+                        class="orbitron-font text-center font-bold tracking-widest text-[9px] md:text-[10px] text-red-400 uppercase drop-shadow-[0_0_5px_rgba(248,113,113,0.3)]">
+                        ELIMINATED
+                    </h2>
+
+                    <!-- CSS Marquee replacement -->
+                    <div class="marquee-wrapper">
+                        <!-- We append to this inner flex container -->
+                        <div id="eliminated-list" class="marquee-content gap-4 px-4">
+                            <!-- Initial Placeholder -->
+                            <div
+                                class="flex items-center gap-1.5 px-3 py-0.5 opacity-50 text-[10px] text-slate-400 whitespace-nowrap">
+                                Waiting for eliminations...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- We removed the chat interaction simulator -->
+            </div>
+        </div>
+        <!-- Physics Canvas -->
+        <canvas id="gameCanvas">
+        </canvas>
+    </div>
+    <script>
+        // --- 1. Sound Synthesis Engine (Web Audio API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        const bgMusic = new Audio('0312 (1).MP3');
+        bgMusic.loop = true;
+
+        const Sounds = {
+            playBounce: (velocity) => {
+                if (audioCtx.state === 'suspended') return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const now = audioCtx.currentTime;
+
+                osc.type = 'sine';
+
+                // Classic water drop/bubble pitch envelope: fast upward sweep
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.06);
+
+                // Quick, plucky volume envelope for the "bloop" shape
+                const vol = Math.min(0.06, velocity * 0.01);
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(vol, now + 0.01); // 10ms attack
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06); // 50ms decay
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.06);
+            },
+
+            playEliminate: () => {
+                if (audioCtx.state === 'suspended') return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5);
+
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            },
+
+            playWin: () => {
+                if (audioCtx.state === 'suspended') return;
+                [440, 554.37, 659.25, 880].forEach((freq, i) => { // A Major arpeggio
+                    setTimeout(() => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'square';
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 1);
+                    }, i * 150);
+                });
+            },
+
+            playBuzzer: () => {
+                if (audioCtx.state === 'suspended') return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 1.5);
+
+                gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.5);
+            },
+
+            playTick: () => {
+                if (audioCtx.state === 'suspended') return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.05);
+
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            },
+
+            announce: (text) => {
+                if ('speechSynthesis' in window) {
+                    // Cancel any currently playing speech to keep it snappy
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = 1.2; // Speak slightly faster
+                    utterance.pitch = 1.1; // Slightly more energetic pitch
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+        };
+
+        // --- 2. Game Setup & Data ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height, cx, cy;
+        let arenaRadius = 0;
+        let gapAngle = 0; // The angle where the gap starts
+        let gapSize = Math.PI / 8; // Start small
+        let arenaRotationSpeed = 0.02;
+        let countdownInterval = null; // Used for the auto-restart timer
+        let roundStartTime = 0; // To track 50-second round limit
+        let buzzerPlayed = false;
+        let introAnnounced = false;
+        let lastTickTime = 0;
+
+        // List of sovereign countries to participate (Filtered from all ISO codes)
+        const countryCodes = [
+            'AD', 'AE', 'AF', 'AG', 'AL', 'AM', 'AO', 'AR', 'AT', 'AU', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BN', 'BO', 'BR', 'BS', 'BT', 'BW', 'BY', 'BZ', 'CA', 'CD', 'CF', 'CG', 'CH', 'CI', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FM', 'FR', 'GA', 'GB', 'GD', 'GE', 'GH', 'GM', 'GN', 'GQ', 'GR', 'GT', 'GW', 'GY', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IN', 'IQ', 'IR', 'IS', 'IT', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MR', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NE', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NZ', 'OM', 'PA', 'PE', 'PG', 'PH', 'PK', 'PL', 'PT', 'PW', 'PY', 'QA', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SI', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SY', 'SZ', 'TD', 'TG', 'TH', 'TJ', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TZ', 'UA', 'UG', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VN', 'VU', 'WS', 'YE', 'ZA', 'ZM', 'ZW'
+        ].slice(0, 150);
+
+        // Explicit names to avoid Intl API issues
+        const COUNTRY_NAMES = {
+            'AD': 'Andorra', 'AE': 'United Arab Emirates', 'AF': 'Afghanistan', 'AG': 'Antigua & Barbuda', 'AL': 'Albania',
+            'AM': 'Armenia', 'AO': 'Angola', 'AR': 'Argentina', 'AT': 'Austria', 'AU': 'Australia',
+            'AZ': 'Azerbaijan', 'BA': 'Bosnia & Herzegovina', 'BB': 'Barbados', 'BD': 'Bangladesh', 'BE': 'Belgium',
+            'BF': 'Burkina Faso', 'BG': 'Bulgaria', 'BH': 'Bahrain', 'BI': 'Burundi', 'BJ': 'Benin',
+            'BN': 'Brunei', 'BO': 'Bolivia', 'BR': 'Brazil', 'BS': 'Bahamas', 'BT': 'Bhutan',
+            'BW': 'Botswana', 'BY': 'Belarus', 'BZ': 'Belize', 'CA': 'Canada', 'CD': 'Congo - Kinshasa',
+            'CF': 'Central African Republic', 'CG': 'Congo - Brazzaville', 'CH': 'Switzerland', 'CI': 'Côte d’Ivoire', 'CL': 'Chile',
+            'CM': 'Cameroon', 'CN': 'China', 'CO': 'Colombia', 'CR': 'Costa Rica', 'CU': 'Cuba',
+            'CV': 'Cape Verde', 'CY': 'Cyprus', 'CZ': 'Czechia', 'DE': 'Germany', 'DJ': 'Djibouti',
+            'DK': 'Denmark', 'DM': 'Dominica', 'DO': 'Dominican Republic', 'DZ': 'Algeria', 'EC': 'Ecuador',
+            'EE': 'Estonia', 'EG': 'Egypt', 'ER': 'Eritrea', 'ES': 'Spain', 'ET': 'Ethiopia',
+            'FI': 'Finland', 'FJ': 'Fiji', 'FM': 'Micronesia', 'FR': 'France', 'GA': 'Gabon',
+            'GB': 'United Kingdom', 'GD': 'Grenada', 'GE': 'Georgia', 'GH': 'Ghana', 'GM': 'Gambia',
+            'GN': 'Guinea', 'GQ': 'Equatorial Guinea', 'GR': 'Greece', 'GT': 'Guatemala', 'GW': 'Guinea-Bissau',
+            'GY': 'Guyana', 'HN': 'Honduras', 'HR': 'Croatia', 'HT': 'Haiti', 'HU': 'Hungary',
+            'ID': 'Indonesia', 'IE': 'Ireland', 'IL': 'Israel', 'IN': 'India', 'IQ': 'Iraq',
+            'IR': 'Iran', 'IS': 'Iceland', 'IT': 'Italy', 'JM': 'Jamaica', 'JO': 'Jordan',
+            'JP': 'Japan', 'KE': 'Kenya', 'KG': 'Kyrgyzstan', 'KH': 'Cambodia', 'KI': 'Kiribati',
+            'KM': 'Comoros', 'KN': 'St. Kitts & Nevis', 'KP': 'North Korea', 'KR': 'South Korea', 'KW': 'Kuwait',
+            'KZ': 'Kazakhstan', 'LA': 'Laos', 'LB': 'Lebanon', 'LC': 'St. Lucia', 'LI': 'Liechtenstein',
+            'LK': 'Sri Lanka', 'LR': 'Liberia', 'LS': 'Lesotho', 'LT': 'Lithuania', 'LU': 'Luxembourg',
+            'LV': 'Latvia', 'LY': 'Libya', 'MA': 'Morocco', 'MC': 'Monaco', 'MD': 'Moldova',
+            'ME': 'Montenegro', 'MG': 'Madagascar', 'MH': 'Marshall Islands', 'MK': 'North Macedonia', 'ML': 'Mali',
+            'MM': 'Myanmar', 'MN': 'Mongolia', 'MR': 'Mauritania', 'MT': 'Malta', 'MU': 'Mauritius',
+            'MV': 'Maldives', 'MW': 'Malawi', 'MX': 'Mexico', 'MY': 'Malaysia', 'MZ': 'Mozambique',
+            'NA': 'Namibia', 'NE': 'Niger', 'NG': 'Nigeria', 'NI': 'Nicaragua', 'NL': 'Netherlands',
+            'NO': 'Norway', 'NP': 'Nepal', 'NR': 'Nauru', 'NZ': 'New Zealand', 'OM': 'Oman',
+            'PA': 'Panama', 'PE': 'Peru', 'PG': 'Papua New Guinea', 'PH': 'Philippines', 'PK': 'Pakistan',
+            'PL': 'Poland', 'PT': 'Portugal', 'PW': 'Palau', 'PY': 'Paraguay', 'QA': 'Qatar',
+            'RO': 'Romania', 'RS': 'Serbia', 'RU': 'Russia', 'RW': 'Rwanda', 'SA': 'Saudi Arabia',
+            'SB': 'Solomon Islands', 'SC': 'Seychelles', 'SD': 'Sudan', 'SE': 'Sweden', 'SG': 'Singapore',
+            'SI': 'Slovenia', 'SK': 'Slovakia', 'SL': 'Sierra Leone', 'SM': 'San Marino', 'SN': 'Senegal',
+            'SO': 'Somalia', 'SR': 'Suriname', 'SS': 'South Sudan', 'ST': 'São Tomé & Príncipe', 'SV': 'El Salvador',
+            'SY': 'Syria', 'SZ': 'Eswatini', 'TD': 'Chad', 'TG': 'Togo', 'TH': 'Thailand',
+            'TJ': 'Tajikistan', 'TL': 'Timor-Leste', 'TM': 'Turkmenistan', 'TN': 'Tunisia', 'TO': 'Tonga',
+            'TR': 'Turkey', 'TT': 'Trinidad & Tobago', 'TV': 'Tuvalu', 'TZ': 'Tanzania', 'UA': 'Ukraine',
+            'UG': 'Uganda', 'US': 'United States', 'UY': 'Uruguay', 'UZ': 'Uzbekistan', 'VA': 'Vatican City',
+            'VC': 'St. Vincent & Grenadines', 'VE': 'Venezuela', 'VN': 'Vietnam', 'VU': 'Vanuatu', 'WS': 'Samoa',
+            'YE': 'Yemen', 'ZA': 'South Africa', 'ZM': 'Zambia', 'ZW': 'Zimbabwe'
+        };
+
+        let balls = [];
+        let gameActive = false;
+        let winCounts = {}; // Track wins across all rounds
+
+        class Ball {
+            constructor(code) {
+                this.code = code;
+                this.targetRadius = 12; // EXACT same radius for all of them
+                this.radius = 0; // Start at 0 for spawn animation
+                this.baseRadius = this.targetRadius;
+
+                // Spawn randomly inside the arena
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * (arenaRadius - this.targetRadius - 20);
+                this.x = cx + Math.cos(angle) * dist;
+                this.y = cy + Math.sin(angle) * dist;
+
+                // Random velocity (Slower)
+                const speed = Math.random() * 1 + 0.5; // 0.5 to 1.5 pixels per frame
+                const vAngle = Math.random() * Math.PI * 2;
+                this.vx = Math.cos(vAngle) * speed;
+                this.vy = Math.sin(vAngle) * speed;
+
+                this.mass = this.targetRadius;
+                this.isEliminated = false;
+                this.boostTime = 0;
+
+                // Load flag image
+                this.img = new Image();
+                this.img.src = `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
+                this.imgLoaded = false;
+                this.img.onload = () => this.imgLoaded = true;
+            }
+
+            draw() {
+                // If the image hasn't loaded yet, don't draw anything (no flash of text)
+                if (!this.imgLoaded) return;
+
+                if (this.isEliminated && this.radius < 1) return;
+
+                // Smooth scale-in animation on spawn
+                if (!this.isEliminated && this.radius < this.targetRadius && this.boostTime === 0) {
+                    this.radius += (this.targetRadius - this.radius) * 0.1;
+                }
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+
+                // Boost effect
+                if (this.boostTime > 0) {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#00ffff';
+                    ctx.strokeStyle = '#00ffff';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+
+                ctx.clip();
+
+                if (this.imgLoaded) {
+                    // Draw image covering the circle
+                    ctx.drawImage(this.img, this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
+                }
+
+                // Add 3D Shading sphere overlay
+                const gradient = ctx.createRadialGradient(
+                    this.x - this.radius * 0.3, this.y - this.radius * 0.3, this.radius * 0.1,
+                    this.x, this.y, this.radius
+                );
+                // Top-left shiny highlight tapering off into a darker bottom-right shadow
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
+                gradient.addColorStop(0.4, 'rgba(255, 255, 255, 0)');
+                gradient.addColorStop(0.8, 'rgba(0, 0, 0, 0.3)');
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            update() {
+                if (this.isEliminated) {
+                    // Shrink and fall animation
+                    this.radius *= 0.9;
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    return;
+                }
+
+                // Handle boost duration
+                if (this.boostTime > 0) {
+                    this.boostTime--;
+                    if (this.boostTime <= 0) {
+                        this.targetRadius = this.baseRadius; // Reset size smoothly 
+                    }
+                    if (this.radius < this.targetRadius) {
+                        this.radius += (this.targetRadius - this.radius) * 0.1;
+                    }
+                } else if (!this.isEliminated && this.radius > this.targetRadius) {
+                    // Smoothly shrink back from boost
+                    this.radius += (this.targetRadius - this.radius) * 0.1;
+                }
+
+                // Keep ball moving at a minimum speed — ramps up during sudden death to stay dramatic
+                const now = Date.now();
+                const elapsed = now - roundStartTime;
+                let minSpeed = 1.0;
+                if (elapsed > 35000) {
+                    // Sudden death: ramp min speed from 1.5 up to 3.5 over the last 15s
+                    const sdProgress = Math.min(1, (elapsed - 35000) / 15000);
+                    minSpeed = 1.5 + sdProgress * 2.0;
+                }
+                const currentSpeedBefore = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                if (currentSpeedBefore < minSpeed) {
+                    const scaleStr = currentSpeedBefore === 0 ? 1 : (minSpeed / currentSpeedBefore);
+                    this.vx = (this.vx || 1) * scaleStr;
+                    this.vy = (this.vy || 1) * scaleStr;
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Boundary Collision (Circular Arena)
+                const dx = this.x - cx;
+                const dy = this.y - cy;
+                const distFromCenter = Math.sqrt(dx * dx + dy * dy);
+
+                if (distFromCenter + this.radius >= arenaRadius) {
+                    // Calculate angle of the ball relative to center
+                    let ballAngle = Math.atan2(dy, dx);
+                    if (ballAngle < 0) ballAngle += Math.PI * 2;
+
+                    // Normalize gap angles (gap rotates)
+                    let normalizedGapStart = gapAngle % (Math.PI * 2);
+                    if (normalizedGapStart < 0) normalizedGapStart += Math.PI * 2;
+                    let normalizedGapEnd = (normalizedGapStart + gapSize) % (Math.PI * 2);
+
+                    let inGap = false;
+                    if (gameActive) {
+                        if (gapSize >= Math.PI * 1.99) {
+                            // If the gap has opened entirely, the ball falls out no matter its angle
+                            inGap = true;
+                        } else if (normalizedGapStart < normalizedGapEnd) {
+                            inGap = ballAngle >= normalizedGapStart && ballAngle <= normalizedGapEnd;
+                        } else {
+                            // Gap crosses the 0 radian line
+                            inGap = ballAngle >= normalizedGapStart || ballAngle <= normalizedGapEnd;
+                        }
+                    }
+
+                    if (inGap) {
+                        // Eliminate!
+                        this.isEliminated = true;
+                        addEliminatedUI(this.code, this.img.src);
+                        checkWinCondition();
+                    } else {
+                        // Reflect vector based on circle normal
+                        const nx = dx / distFromCenter;
+                        const ny = dy / distFromCenter;
+
+                        // Dot product of velocity and normal
+                        const dot = this.vx * nx + this.vy * ny;
+
+                        // Bounce only if moving towards the wall
+                        if (dot > 0) {
+                            this.vx -= 2 * dot * nx;
+                            this.vy -= 2 * dot * ny;
+
+                            // Remove energy gain from walls so they don't constantly get faster
+                            this.vx *= 1.0;
+                            this.vy *= 1.0;
+
+                            // Prevent infinite speed — allow higher max during sudden death
+                            const currentSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                            const maxSpeed = 5;
+                            if (currentSpeed > maxSpeed) {
+                                this.vx = (this.vx / currentSpeed) * maxSpeed;
+                                this.vy = (this.vy / currentSpeed) * maxSpeed;
+                            }
+
+                            // Keep inside
+                            this.x = cx + nx * (arenaRadius - this.radius);
+                            this.y = cy + ny * (arenaRadius - this.radius);
+
+                            Sounds.playBounce(currentSpeed);
+                        }
+                    }
+                }
+            }
+
+            boost() {
+                if (this.isEliminated) return;
+                this.boostTime = 180; // 3 seconds at 60fps
+                this.targetRadius = this.baseRadius * 1.5; // Grow 50%
+                // Increase speed towards center slightly to avoid walls
+                const dx = cx - this.x;
+                const dy = cy - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist > 0) {
+                    this.vx += (dx / dist) * 2;
+                    this.vy += (dy / dist) * 2;
+                }
+            }
+        }
+
+        // --- 3. Physics & Math Helpers ---
+        function resolveCollisions() {
+            for (let i = 0; i < balls.length; i++) {
+                for (let j = i + 1; j < balls.length; j++) {
+                    const b1 = balls[i];
+                    const b2 = balls[j];
+                    if (b1.isEliminated || b2.isEliminated) continue;
+
+                    const dx = b2.x - b1.x;
+                    const dy = b2.y - b1.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const minDist = b1.radius + b2.radius;
+
+                    if (dist < minDist) {
+                        // 1. Separate them to prevent sticking
+                        const overlap = minDist - dist;
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+
+                        // Move each ball half the overlap distance away
+                        b1.x -= nx * (overlap / 2);
+                        b1.y -= ny * (overlap / 2);
+                        b2.x += nx * (overlap / 2);
+                        b2.y += ny * (overlap / 2);
+
+                        // 2. Elastic collision response
+                        const normalX = nx;
+                        const normalY = ny;
+
+                        // Relative velocity
+                        const rvx = b2.vx - b1.vx;
+                        const rvy = b2.vy - b1.vy;
+
+                        // Velocity along normal
+                        const velAlongNormal = rvx * normalX + rvy * normalY;
+
+                        // Do not resolve if velocities are separating
+                        if (velAlongNormal > 0) continue;
+
+                        // Restitution (bounciness) - 1.0 means perfectly elastic so they don't lose energy
+                        const e = 1.0;
+
+                        // Impulse scalar
+                        let jImpulse = -(1 + e) * velAlongNormal;
+                        jImpulse /= (1 / b1.mass) + (1 / b2.mass);
+
+                        // Apply impulse
+                        const impulseX = jImpulse * normalX;
+                        const impulseY = jImpulse * normalY;
+
+                        b1.vx -= (1 / b1.mass) * impulseX;
+                        b1.vy -= (1 / b1.mass) * impulseY;
+                        b2.vx += (1 / b2.mass) * impulseX;
+                        b2.vy += (1 / b2.mass) * impulseY;
+
+                        const speed = Math.sqrt(b1.vx * b1.vx + b1.vy * b1.vy);
+                        if (speed > 2) Sounds.playBounce(speed);
+                    }
+                }
+            }
+        }
+
+        // --- 4. Main Game Loop & Rendering ---
+        function resize() {
+            const container = document.getElementById('app-container');
+            width = canvas.width = container.clientWidth;
+            height = canvas.height = container.clientHeight;
+            cx = width / 2;
+            cy = height / 2 + 30; // Shift down slightly to clear top UI
+            // Make the circle slightly larger again (0.35 -> 0.38)
+            arenaRadius = Math.min(width, height) * 0.38;
+        }
+
+        function init() {
+            resize();
+            gapSize = Math.PI / 8; // Reset initial gap size
+            gapAngle = 0;          // Reset gap angle
+            balls = countryCodes.map(code => new Ball(code));
+            document.getElementById('eliminated-list').innerHTML = '';
+            gameActive = true;
+            roundStartTime = Date.now();
+            buzzerPlayed = false;
+            introAnnounced = false;
+            lastTickTime = 0;
+            document.getElementById('winner-text').innerText = '';
+
+            // Clear any active countdown timer and hide overlay on manual restart
+            if (countdownInterval) clearInterval(countdownInterval);
+            const overlay = document.getElementById('countdown-overlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+        }
+
+        function drawArena() {
+            ctx.lineWidth = 6;
+
+            // Draw solid circle behind everything for background
+            ctx.beginPath();
+            ctx.arc(cx, cy, arenaRadius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.02)'; // Frosted inner circle
+            ctx.fill();
+
+            // Calculate gaps
+            let start1 = gapAngle + gapSize;
+            let end1 = gapAngle + Math.PI * 2;
+
+            // Draw vibrant glowing gradient ring — Electric Blue → Vivid Purple
+            const ringGrad = ctx.createLinearGradient(cx - arenaRadius, cy, cx + arenaRadius, cy);
+            ringGrad.addColorStop(0, '#00C6FF');   // Electric blue
+            ringGrad.addColorStop(0.5, '#9B59F5'); // Rich violet
+            ringGrad.addColorStop(1, '#00C6FF');   // Back to blue
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, arenaRadius, start1, end1);
+            ctx.strokeStyle = ringGrad;
+            ctx.lineWidth = 7;
+            ctx.setLineDash([]);
+            ctx.lineCap = 'round';
+            ctx.shadowBlur = 35;
+            ctx.shadowColor = '#7B61FF'; // Purple glow
+            ctx.stroke();
+
+            // Draw red danger zone (the plasma gap)
+            ctx.beginPath();
+            ctx.arc(cx, cy, arenaRadius, gapAngle, gapAngle + gapSize);
+            ctx.strokeStyle = '#FF2A54'; // Vibrant pink/red
+            ctx.setLineDash([]);
+            ctx.lineCap = 'round';
+            ctx.shadowBlur = 25;
+            ctx.shadowColor = 'rgba(255, 42, 84, 0.8)';
+            ctx.stroke();
+
+            ctx.shadowBlur = 0; // Reset
+        }
+
+        function addEliminatedUI(code, imgSrc) {
+            const list = document.getElementById('eliminated-list');
+            // Remove placeholder if it exists
+            if (list.innerHTML.includes('Waiting')) {
+                list.innerHTML = '';
+            }
+
+            // Resolve full country name
+            let name = code;
+            if (COUNTRY_NAMES[code]) {
+                name = COUNTRY_NAMES[code];
+            } else {
+                try {
+                    name = new Intl.DisplayNames(['en'], { type: 'region' }).of(code);
+                } catch (e) { }
+            }
+            const item = document.createElement('div');
+            item.className = 'flex items-center gap-1.5 px-3 py-0.5 opacity-70 grayscale-[50%] transition-opacity hover:grayscale-0';
+            item.innerHTML = `<img src="${imgSrc}" class="w-4 h-auto rounded-[2px] shadow-sm"> <span class="font-bold text-[10px] text-slate-300 whitespace-nowrap">${name}</span>`;
+
+            // Insert at the beginning so newest is seen immediately in the CSS marquee
+            list.prepend(item);
+        }
+
+        function spawnConfetti(container) {
+            // Clear any previous confetti
+            container.querySelectorAll('.confetti-piece, .firework-particle').forEach(el => el.remove());
+
+            const colors = ['#FFD700', '#FF2A54', '#00C6FF', '#9B59F5', '#00FF9F', '#FF9000', '#FFFFFF'];
+
+            // --- Confetti falling pieces ---
+            for (let i = 0; i < 60; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti-piece';
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const left = Math.random() * 100; // % across card
+                const duration = 1.5 + Math.random() * 2; // 1.5s – 3.5s
+                const delay = Math.random() * 1.2; // stagger start
+                el.style.cssText = `
+                    background: ${color};
+                    left: ${left}%;
+                    animation-duration: ${duration}s;
+                    animation-delay: ${delay}s;
+                    width: ${5 + Math.random() * 7}px;
+                    height: ${8 + Math.random() * 10}px;
+                `;
+                el.addEventListener('animationend', () => el.remove());
+                container.appendChild(el);
+            }
+
+            // --- Firework burst from the flag center (roughly 50% down, middle) ---
+            for (let i = 0; i < 24; i++) {
+                const el = document.createElement('div');
+                el.className = 'firework-particle';
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const angle = (i / 24) * 360;
+                const dist = 60 + Math.random() * 60; // px to travel
+                const rad = angle * Math.PI / 180;
+                const tx = `${Math.cos(rad) * dist}px`;
+                const ty = `${Math.sin(rad) * dist}px`;
+                const duration = 0.6 + Math.random() * 0.5;
+                const delay = Math.random() * 0.4;
+                el.style.cssText = `
+                    background: ${color};
+                    --tx: ${tx};
+                    --ty: ${ty};
+                    animation-duration: ${duration}s;
+                    animation-delay: ${delay}s;
+                    top: 48%;
+                    width: ${4 + Math.random() * 5}px;
+                    height: ${4 + Math.random() * 5}px;
+                `;
+                el.addEventListener('animationend', () => el.remove());
+                container.appendChild(el);
+            }
+        }
+
+        function startAutoRestartCountdown(winnerCode) {
+            const overlay = document.getElementById('countdown-overlay');
+            const numberEl = document.getElementById('countdown-number');
+            const winnerText = document.getElementById('winner-text');
+            const winnerFlag = document.getElementById('winner-flag');
+
+            let winnerName = winnerCode;
+            if (COUNTRY_NAMES[winnerCode]) {
+                winnerName = COUNTRY_NAMES[winnerCode];
+            } else {
+                try {
+                    winnerName = new Intl.DisplayNames(['en'], { type: 'region' }).of(winnerCode);
+                } catch (e) { }
+            }
+            winnerText.innerText = winnerName;
+
+            winnerFlag.src = `https://flagcdn.com/w160/${winnerCode.toLowerCase()}.png`;
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+
+            // 🎉 Trigger confetti & fireworks inside the card
+            const card = overlay.querySelector('.glass-panel');
+            if (card) spawnConfetti(card);
+
+            let count = 5;
+            numberEl.innerText = count + 's';
+
+            // Trigger animation for the first number
+            numberEl.classList.remove('animate-pop');
+            void numberEl.offsetWidth; // Trigger DOM reflow to restart animation
+            numberEl.classList.add('animate-pop');
+
+            countdownInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    numberEl.innerText = count + 's';
+                    // Retrigger animation
+                    numberEl.classList.remove('animate-pop');
+                    void numberEl.offsetWidth;
+                    numberEl.classList.add('animate-pop');
+                } else {
+                    clearInterval(countdownInterval);
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                    init(); // Auto-restart the game
+                }
+            }, 1000);
+        }
+
+        function checkWinCondition() {
+            const alive = balls.filter(b => !b.isEliminated);
+            if (alive.length === 1 && gameActive) {
+                gameActive = false;
+                Sounds.playWin();
+
+                // 🎉 Launch canvas confetti from the winner ball's position
+                launchCanvasConfetti(alive[0].x, alive[0].y);
+
+                const winnerCode = alive[0].code;
+
+                // Track win
+                winCounts[winnerCode] = (winCounts[winnerCode] || 0) + 1;
+                updateLeaderboardUI();
+
+                let winnerName = winnerCode;
+                if (COUNTRY_NAMES[winnerCode]) {
+                    winnerName = COUNTRY_NAMES[winnerCode];
+                } else {
+                    try {
+                        winnerName = new Intl.DisplayNames(['en'], { type: 'region' }).of(winnerCode);
+                    } catch (e) { }
+                }
+                Sounds.announce("Round over! The winner is " + winnerName);
+
+                // Start countdown 1 second after winning
+                setTimeout(() => {
+                    startAutoRestartCountdown(winnerCode);
+                }, 1000);
+            }
+        }
+
+        // Canvas confetti system
+        let canvasConfetti = [];
+
+        function launchCanvasConfetti(originX, originY) {
+            const colors = ['#FFD700', '#FF2A54', '#00C6FF', '#9B59F5', '#00FF9F', '#FF9000', '#FFFFFF', '#FF69B4'];
+            for (let i = 0; i < 120; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 8;
+                canvasConfetti.push({
+                    x: originX,
+                    y: originY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 4, // slight upward bias
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    w: 5 + Math.random() * 7,
+                    h: 8 + Math.random() * 10,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 15,
+                    alpha: 1,
+                    gravity: 0.18 + Math.random() * 0.1,
+                });
+            }
+        }
+
+        function drawCanvasConfetti() {
+            canvasConfetti = canvasConfetti.filter(p => p.alpha > 0.01);
+            for (const p of canvasConfetti) {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += p.gravity;
+                p.vx *= 0.98; // slight air resistance
+                p.rotation += p.rotSpeed;
+                p.alpha -= 0.012;
+
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, p.alpha);
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        function updateLeaderboardUI() {
+            const leaderboard = document.getElementById('leaderboard');
+            leaderboard.innerHTML = '';
+
+            // Sort by wins (descending)
+            const topWinners = Object.entries(winCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3); // Get top 3
+
+            const colors = [
+                'text-amber-400', // 1st Place Gold
+                'text-slate-300', // 2nd Place Silver
+                'text-amber-700'  // 3rd Place Bronze
+            ];
+
+            topWinners.forEach(([code, wins], index) => {
+                let countryName = code;
+                if (COUNTRY_NAMES[code]) {
+                    countryName = COUNTRY_NAMES[code];
+                } else {
+                    try {
+                        countryName = new Intl.DisplayNames(['en'], { type: 'region' }).of(code);
+                    } catch (e) { }
+                }
+
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center bg-white/5 rounded px-2 py-1 animate-pop';
+                li.innerHTML = `
+                    <span class="flex items-center gap-2">
+                        <span class="${colors[index]} font-bold w-3 text-center text-[10px]">${index + 1}</span>
+                        <img src="https://flagcdn.com/w20/${code.toLowerCase()}.png" class="w-4 h-auto rounded-[2px]" />
+                        <span class="text-slate-100 truncate w-16" title="${countryName}">${countryName}</span>
+                    </span>
+                    <span class="text-cyan-400 font-bold">${wins}<span class="text-[10px] opacity-70">W</span></span>
+                `;
+                leaderboard.appendChild(li);
+            });
+        }
+
+        function loop() {
+            // Dark trail effect matching the new luxury background
+            ctx.fillStyle = 'rgba(11, 10, 21, 0.4)'; // Matches --bg-color
+            ctx.fillRect(0, 0, width, height);
+
+            if (gameActive) {
+                // Rotate Arena gap
+                gapAngle += arenaRotationSpeed;
+
+                // Enforce exactly 50 seconds match duration via gap size
+                const elapsed = Date.now() - roundStartTime;
+
+                if (elapsed > 10000 && !introAnnounced) {
+                    introAnnounced = true;
+                    Sounds.announce("Comment your country name for extra luck");
+                }
+
+                // Keep the gap small for the first 35 seconds to prevent early finishes
+                // Then rapidly expand the gap over the last 15 seconds to ensure exactly 50s duration
+                let progress = 0;
+                if (elapsed > 35000) {
+                    if (!buzzerPlayed) {
+                        buzzerPlayed = true;
+                        Sounds.playBuzzer();
+                    }
+
+                    progress = Math.min(1, (elapsed - 35000) / 15000);
+
+                    // Escalating ticking sound effect
+                    const tickRate = Math.max(100, 1000 - (progress * 900));
+                    if (Date.now() - lastTickTime > tickRate) {
+                        Sounds.playTick();
+                        lastTickTime = Date.now();
+                    }
+                }
+
+                // Scale gap size smoothly from PI/8 up to almost 2PI
+                gapSize = (Math.PI / 8) + (progress * Math.PI * 1.88);
+
+                resolveCollisions();
+            }
+
+            drawArena();
+
+            // Draw and update balls
+            // Sort to draw alive balls on top of eliminated ones
+            balls.sort((a, b) => a.isEliminated - b.isEliminated);
+
+            balls.forEach(ball => {
+                ball.update();
+                ball.draw();
+            });
+
+            // Draw canvas confetti particles (renders even after round ends)
+            drawCanvasConfetti();
+
+            requestAnimationFrame(loop);
+        }
+
+        // --- 5. Events & Interactions ---
+        window.addEventListener('resize', () => {
+            if (gameActive) resize();
+        });
+
+        document.getElementById('start-btn').addEventListener('click', () => {
+            audioCtx.resume().then(() => {
+                bgMusic.play().catch(e => console.log("Audio play failed:", e));
+                document.getElementById('start-screen').style.display = 'none';
+                document.getElementById('ui-layer').classList.remove('hidden');
+                init();
+            });
+        });
+
+        // Spacebar to restart immediately (skips countdown if active)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault(); // Prevent page scrolling
+                const startScreen = document.getElementById('start-screen');
+                const gameOverScreen = document.getElementById('game-over-overlay');
+
+                // Only allow restart if the initial "Start Simulation" screen is gone
+                if (startScreen.style.display === 'none') {
+                    // If restarting from the final game over screen, reset the entire tournament
+                    if (!gameOverScreen.classList.contains('hidden')) {
+                        winCounts = {};
+                        updateLeaderboardUI();
+                        gameOverScreen.classList.add('hidden');
+                        gameOverScreen.classList.remove('flex');
+                    }
+                    init();
+                }
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const startScreen = document.getElementById('start-screen');
+                if (startScreen.style.display === 'none') {
+                    showGameOverScreen();
+                }
+            }
+        });
+
+        function showGameOverScreen() {
+            // Stop current game loop flags
+            gameActive = false;
+            clearInterval(countdownInterval);
+            document.getElementById('countdown-overlay').classList.add('hidden');
+            document.getElementById('countdown-overlay').classList.remove('flex');
+
+            // Clear physics objects visually
+            balls = [];
+            document.getElementById('eliminated-list').innerHTML = '';
+
+            const gameOverOverlay = document.getElementById('game-over-overlay');
+            const finalLeaderboard = document.getElementById('final-leaderboard');
+
+            finalLeaderboard.innerHTML = '';
+
+            // Sort by wins (descending)
+            const top5 = Object.entries(winCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5); // Get top 5
+
+            const medalColors = [
+                'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]', // 1st
+                'text-slate-300 drop-shadow-[0_0_8px_rgba(203,213,225,0.8)]', // 2nd
+                'text-amber-600 drop-shadow-[0_0_8px_rgba(217,119,6,0.8)]',   // 3rd
+                'text-slate-500', // 4th
+                'text-slate-600'  // 5th
+            ];
+
+            const sizes = [
+                'text-2xl py-3 px-4', // 1st is huge
+                'text-xl py-2 px-3',  // 2nd
+                'text-lg py-2 px-3',  // 3rd
+                'text-base py-1 px-3 opacity-80', // 4th
+                'text-sm py-1 px-3 opacity-60'   // 5th
+            ];
+
+            if (top5.length === 0) {
+                finalLeaderboard.innerHTML = '<li class="text-slate-500 text-center py-4">No winners yet. Play a round!</li>';
+            } else {
+                top5.forEach(([code, wins], index) => {
+                    let countryName = code;
+                    if (COUNTRY_NAMES[code]) {
+                        countryName = COUNTRY_NAMES[code];
+                    } else {
+                        try {
+                            countryName = new Intl.DisplayNames(['en'], { type: 'region' }).of(code);
+                        } catch (e) { }
+                    }
+
+                    const li = document.createElement('li');
+                    li.className = `flex justify-between items-center w-full max-w-xs bg-white/5 rounded-xl border border-white/5 shadow-sm animate-pop ${sizes[index]}`;
+                    // Stagger animation based on rank
+                    li.style.animationDelay = `${index * 0.15}s`;
+
+                    li.innerHTML = `
+                        <span class="flex items-center gap-3 flex-1 min-w-0 pr-2">
+                            <span class="${medalColors[index]} orbitron-font font-black w-6 text-center shrink-0">${index + 1}</span>
+                            <img src="https://flagcdn.com/w40/${code.toLowerCase()}.png" class="h-auto rounded-[3px] shadow-md border border-white/10 shrink-0 ${index === 0 ? 'w-10' : (index < 3 ? 'w-8' : 'w-6')}" />
+                            <span class="text-white font-bold tracking-wide truncate">${countryName}</span>
+                        </span>
+                        <span class="text-cyan-400 font-black orbitron-font bg-cyan-900/30 px-3 py-1 rounded-lg border border-cyan-500/20 shrink-0 whitespace-nowrap">${wins}<span class="text-xs ml-1 font-sans font-medium text-cyan-200">WINS</span></span>
+                    `;
+                    finalLeaderboard.appendChild(li);
+                });
+            }
+
+            gameOverOverlay.classList.remove('hidden');
+            gameOverOverlay.classList.add('flex');
+
+            // Small celebration pop
+            Sounds.playWin();
+        }
+
+        // Start render loop immediately for background visual
+        resize();
+        loop();
+    </script>
+</body>
+
+</html>
