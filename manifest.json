@@ -2,8 +2,10 @@
   "name": "Country Brawl",
   "short_name": "CountryBrawl",
   "description": "Watch nations battle in the absolute arena.",
+  "id": "/",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0B0A15",
   "theme_color": "#0B0A15",
   "icons": [
@@ -14,10 +16,32 @@
       "purpose": "any"
     },
     {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "https://flagcdn.com/w160/fr.png",
       "sizes": "160x160",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot-mobile.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile Gameplay"
+    },
+    {
+      "src": "screenshot-desktop.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop Arena"
     }
   ]
 }
